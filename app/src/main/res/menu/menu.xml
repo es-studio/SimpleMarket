@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	<item
+		android:id="@+id/add"
+		android:icon="@drawable/ic_add"
+		android:title="물건 올리기"
+		app:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/logout"
+		android:title="로그아웃"
+		app:showAsAction="never" />
+</menu>
