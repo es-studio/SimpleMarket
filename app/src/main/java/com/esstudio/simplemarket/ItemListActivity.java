@@ -34,9 +34,11 @@ import com.google.firebase.database.ValueEventListener;
 public class ItemListActivity extends AppCompatActivity
 {
 	private RecyclerView mList;
-	private DatabaseReference mItemRef;
 	private RecyclerView.Adapter mAdapter;
 	private View mEmpty;
+
+	private DatabaseReference mMarketRef;
+	private ValueEventListener mListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -50,11 +52,11 @@ public class ItemListActivity extends AppCompatActivity
 		actionBar.setTitle("심플마켓");
 
 		// TODO : https://github.com/firebase/FirebaseUI-Android/blob/master/database/README.md
-		mItemRef = FirebaseDatabase.getInstance()
+		mMarketRef = FirebaseDatabase.getInstance()
 				.getReference()
 				.child("/market");
 
-		mItemRef.addValueEventListener(new ValueEventListener()
+		mListener = new ValueEventListener()
 		{
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
@@ -67,12 +69,21 @@ public class ItemListActivity extends AppCompatActivity
 			{
 
 			}
-		});
+		};
+		mMarketRef.addValueEventListener(mListener);
 
 		mList = findViewById(R.id.list);
 		mList.setLayoutManager(new LinearLayoutManager(this));
 		mList.addItemDecoration(new SimpleLineDecorator(Color.parseColor("#888888"), 1));
 		mList.setItemAnimator(null);
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		mMarketRef.removeEventListener(mListener);
+
+		super.onDestroy();
 	}
 
 	@Override

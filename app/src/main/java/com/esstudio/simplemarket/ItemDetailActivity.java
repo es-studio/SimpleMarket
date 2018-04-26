@@ -38,6 +38,9 @@ public class ItemDetailActivity extends AppCompatActivity
 
 	private View mBottom;
 
+	private ValueEventListener mListener;
+	private DatabaseReference mMarketRef;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -58,24 +61,26 @@ public class ItemDetailActivity extends AppCompatActivity
 
 		String itemId = getIntent().getStringExtra("ITEM_ID");
 
-		final DatabaseReference itemRef = FirebaseDatabase.getInstance()
+		mMarketRef = FirebaseDatabase.getInstance()
 				.getReference("market")
 				.child(itemId);
 
-		itemRef.addValueEventListener(new ValueEventListener()
+		mListener = new ValueEventListener()
 		{
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
 				mItem = Item.from(dataSnapshot);
-				bindItem(itemRef);
+				bindItem(mMarketRef);
 			}
 
 			@Override
 			public void onCancelled(DatabaseError databaseError)
 			{
 			}
-		});
+		};
+
+		mMarketRef.addValueEventListener(mListener);
 	}
 
 	@Override
@@ -94,6 +99,8 @@ public class ItemDetailActivity extends AppCompatActivity
 	@Override
 	protected void onDestroy()
 	{
+		mMarketRef.removeEventListener(mListener);
+
 		super.onDestroy();
 	}
 
